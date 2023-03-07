@@ -1,13 +1,20 @@
 ## Hardware Interfacing
 This brnach contains hardware interfacing guidelines and version control for all porjects
 
-
+## Scripts
+- Opencv Testing with camera                   : *picture_take.py*
+- Opencv Video Recording with camera           : *video_record.py*
+- TFlite Model running on wiht inference speed : *tflite_model.py*
+- Pytorch Model running                        : *pytorch_test.py*
 
 ## Installations
--
-## Software
-- Ubuntu server 22.04 32bit
--
+- Ubuntu server 20.04 64bit
+- sudo apt-get install python3-pip
+- python3 -m pip install tflite-runtime
+- pip install torch torchvision torchaudio
+- pip install opencv-python
+- sudo apt-get install ffmpeg libsm6 libxext6  -y
+
 
 
 ## Processes
@@ -29,4 +36,18 @@ This brnach contains hardware interfacing guidelines and version control for all
 - To check if video 0 is availble
     ```
     v4l2-ctl --list-devices
+    ```
+- Libraries
+```
+python3 -c "import cv2; print(cv2.__version__)"
+python3 -c "import torch; print(torch.__version__)"
+<!-- python3 -c "import tflite_runtime.interpreter; print(tflite_runtime.interpreter.__version__)" -->
+```
+
+## Efficiencies
+- Installating ncnn
+## Errors
+- ImportError: libGL.so.1:
+    ```
+    sudo apt-get install ffmpeg libsm6 libxext6  -y
     ```
