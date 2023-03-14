@@ -1,11 +1,24 @@
 ## Hardware Interfacing
 This brnach contains hardware interfacing guidelines and version control for all porjects
+# Where I Left :
+- Yolov4 tflite not working
+- Sdd performing detection (Y)
 
 ## Scripts
-- Opencv Testing with camera                   : *picture_take.py*
-- Opencv Video Recording with camera           : *video_record.py*
-- TFlite Model running on wiht inference speed : *tflite_model.py*
-- Pytorch Model running                        : *pytorch_test.py*
+- **PC using tensorflow**
+    - Opencv Testing with Video                    : *0_read_video.py*
+    - TFLite inferencing on image                  : *1_tflite_inference_image.py*
+    - SSD Model running and log inference speed : *2_ssd_tflite_inference_video.py*
+    - Yolo Model running and log inference speed   : *3_yolo_tflite_inference_video.py*
+    - Yolo Model running on image                  : *4_yolov4_tflite_testing.py*
+- **PI using tf-runtime-lite**
+    - Opencv Testing with camera                   : *0_picture_take.py*
+    - Opencv Video Recording with camera           : *1_video_record.py*
+    - TFlite Model running and log inference speed : *3_tflite_model_loading_testing.py*
+    - Pytorch Model running                        : *4_pytorch_test.py*
+    - SSD Model running on image                   : *5_inference_image.py*
+    - SSD Model running on image Video             : *6_inference_video.py*
+
 
 ## Installations
 - Ubuntu server 20.04 64bit
