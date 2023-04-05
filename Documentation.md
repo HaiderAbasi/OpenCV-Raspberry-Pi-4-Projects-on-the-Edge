@@ -8,9 +8,11 @@ This brnach contains hardware interfacing guidelines and version control for all
 - **PC using tensorflow**
     - Opencv Testing with Video                    : *0_read_video.py*
     - TFLite inferencing on image                  : *1_tflite_inference_image.py*
-    - SSD Model running and log inference speed : *2_ssd_tflite_inference_video.py*
-    - Yolo Model running and log inference speed   : *3_yolo_tflite_inference_video.py*
+    - SSD Model on Video and log infr speed        : *2_ssd_tflite_inference_video.py*
+    - Yolo Model on Video and log infr speed       : *3_yolo_tflite_inference_video.py*
     - Yolo Model running on image                  : *4_yolov4_tflite_testing.py*
+    - Mobilenet on Video on cli                    : *4_mbnet_cli_video.py*
+
 - **PI using tf-runtime-lite**
     - Opencv Testing with camera                   : *0_picture_take.py*
     - Opencv Video Recording with camera           : *1_video_record.py*
@@ -27,6 +29,8 @@ This brnach contains hardware interfacing guidelines and version control for all
 - pip install torch torchvision torchaudio
 - pip install opencv-python
 - sudo apt-get install ffmpeg libsm6 libxext6  -y
+- pip install bytetracker
+
 
 
 
