@@ -3,10 +3,11 @@ import os
 import cv2
 import tensorflow as tf
 import time
+
 main_dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 model_file = os.path.join(main_dir_path, 'models', 'yolov4', 'yolov4-416-fp32.tflite')
 label_file = os.path.join(main_dir_path, 'models', 'yolov4', 'labelmap.txt')
-video_file = os.path.join(main_dir_path, 'data', 'a.mkv')
+video_file = os.path.join(main_dir_path, 'data', 'road_recording.mkv')
 
 # Loading labels
 text_file = open(label_file, "r")
@@ -19,6 +20,7 @@ interpreter.allocate_tensors()
 # Get input and output tensors.
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
+
 # Open the video file
 cap = cv2.VideoCapture(video_file)
 
@@ -31,46 +33,38 @@ while cap.isOpened():
     # Preprocess the frame
     input_image = cv2.resize(frame, (416, 416))
     input_image = input_image.reshape(1, input_image.shape[0], input_image.shape[1], input_image.shape[2])
-    input_image = input_image.astype(np.uint8)
+    input_image = input_image.astype(np.float32)
 
-    # Run inference on the frame
-    input_data = np.array(input_image, dtype=np.float32)
-    interpreter.set_tensor(input_details[0]['index'], input_data)
-    # Time measuring
-    start_time = time.time()
+    interpreter.set_tensor(input_details[0]['index'], input_image)
     interpreter.invoke()
     output_data = interpreter.get_tensor(output_details[0]['index'])
-    detections = output_data.squeeze()
-    # class_id, score, x_min, y_min, x_max, y_max = detections[0]
 
-    predicted_labels = interpreter.get_tensor(output_details[1]['index'])
-    inferencing_time = time.time() - start_time
-    print("-"*10)
-    print(predicted_labels.shape)
-    print(predicted_labels)
-    print(output_data.shape)
-    print(output_data)
-    print("*"*10)
+    # Get the indices of the output tensor for class, scores, and boxes
+    class_indices = [i for i in range(len(output_data[0])) if output_data[0][i][0] > 0.5]
+    score_indices = [i for i in range(len(output_data[0])) if output_data[0][i][1] > 0.5]
+    box_indices = [i for i in range(len(output_data[0])) if len(output_data[0][i]) >= 6 and output_data[0][i][2] > 0.5]
 
-    # print(interpreter.get_tensor(output_details[0]),"\n")
-    # print(interpreter.get_tensor(output_details[1]),"\n")
-    # predicted_scores = interpreter.get_tensor(output_details[2]['index'])
-
-    # if(predicted_labels[0][0]>200): # some times gives a very huge number -> causing error list index out of bound
-    #         predicted_labels[0][0]=0
-
-
-    # print([f"{label_array[int(predicted_labels[0][i])]}:{predicted_scores[0][i]}" for i in range(5)])
-
-    # print("Time for Inference : ",inferencing_time)
-    # print("-"*30)
+    # Draw boxes and labels around detected objects
+    for i in box_indices:
+        class_id = int(output_data[0][i][0])
+        score = output_data[0][i][1]
+        x1, y1, x2, y2 = output_data[0][i][2:6]
+        x1 = int(x1 * frame.shape[1])
+        y1 = int(y1 * frame.shape[0])
+        x2 = int(x2 * frame.shape[1])
+        y2 = int(y2 * frame.shape[0])
+        label = label_array[class_id].rstrip()
+        color = (0, 255, 0)
+        cv2.rectangle(frame, (x1, y1), (x2, y2), color, thickness=2)
+        cv2.putText(frame, "{}: {:.2f}".format(label, score), (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, thickness=1)
 
 
-    # Display the results
-    # cv2.putText(frame, top_label, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-    # cv2.imshow('frame', frame)
-    # if cv2.waitKey(1) == ord('q'):
-    #     break
+    # Display the frame with bounding boxes and labels
+    cv2.imshow('Frame', frame)
+
+    # Press Q to exit
+    if cv2.waitKey(25) & 0xFF == ord('q'):
+        break
 
 cap.release()
 cv2.destroyAllWindows()
